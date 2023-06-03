@@ -4,6 +4,7 @@ import userRouter from './routers/user'
 import session from 'express-session'
 import cookieParser from 'cookie-parser'
 import resp from './middleware/resp'
+import token from './util/authorization'
 
 const app = express()
 const PORT: number = 3001
@@ -13,19 +14,19 @@ app.use(bodyParser.json({ limit: '100mb' }))
 // 解析 application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ limit: '100mb', extended: true }))
 
-app.use(cookieParser())
+// app.use(cookieParser())
 
-app.use(session({
-    secret: 'lernning', //随意填写
-    resave: false, //固定写法
-    saveUninitialized: false,//true表示，第一次访问页面不需要登录就生成sessionId，
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 1, //1小时
-        httpOnly: true
-    },
-    name:'RR_UID',
-    rolling: true  //用户最后一次请求开始计算，重新刷新session的有效期，类似淘宝中午不吃饭一直刷，1小时不过期，如果出去午休了，回来再刷新，需要重新登录，淘宝就是不想让你吃午饭，多点为马云做贡献
-}))
+// app.use(session({
+//     secret: 'lernning', //随意填写
+//     resave: false, //固定写法
+//     saveUninitialized: false,//true表示，第一次访问页面不需要登录就生成sessionId，
+//     cookie: {
+//         maxAge: 1000 * 60 * 60 * 1, //1小时
+//         httpOnly: true
+//     },
+//     name:'RR_UID',
+//     rolling: true  //用户最后一次请求开始计算，重新刷新session的有效期，类似淘宝中午不吃饭一直刷，1小时不过期，如果出去午休了，回来再刷新，需要重新登录，淘宝就是不想让你吃午饭，多点为马云做贡献
+// }))
 
 // 配置跨域请求中间件(服务端允许跨域请求)
 app.use((req, res, next) => {
@@ -38,6 +39,7 @@ app.use((req, res, next) => {
     else next();
 })
 
+/* 挂载响应 */
 app.use(resp)
 /*注册路由*/
 app.use('/v1/user', userRouter)

@@ -1,6 +1,7 @@
 
 import query from '../../middleware/query'
 import { encrypt, decrypt } from '../../util/crypto'
+import token from '../../util/authorization'
 
 /* 登录 */
 async function loginModel(req: any, res: any, cb: (err: any, results?: any) => void) {
@@ -10,8 +11,7 @@ async function loginModel(req: any, res: any, cb: (err: any, results?: any) => v
     if (err) return cb(err)
     if (results.length === 1) {
         if (decrypt(results[0].password) === password) {
-            req.session.user = username;
-            return res.resp({ username }, '登录成功')
+            return res.resp({ username, token: 'Bearer ' + token.create({ username }) }, '登录成功')
         }
         else res.resp_err(200, '密码错误,稍后再试')
     } else {
@@ -34,9 +34,9 @@ async function registerModel(req: any, res: any, cb: (err: any, results?: any) =
             username,
             password: encrypt(password),
             register_time: new Date(),
-            status:1,
-            use_space:0,
-            total_space:20
+            status: 1,
+            use_space: 0,
+            total_space: 20
         }
         const { err, results } = await query(sql, user_obj)
         console.log(results.length);

@@ -1,15 +1,17 @@
 import query from '../../middleware/query'
+import token from '../../util/authorization'
 import userModel from '../../models/user/userModel'
 
 /* 登录 */
 function loginController(req: any, res: any) {
     const { username, password } = req.body
-    console.log('--req.body--',req.body)
-    console.log('--req.headers.cookie--',req.headers.cookie,req.session.user)
-    if (req.session.user) {
-        return res.resp({ username }, '用户已登陆')
-    }
+    console.log('--req.body--', req.body)
     // console.log('--req.headers.cookie--',req.headers.cookie,req.session.user)
+    // if (req.session.user) {
+    //     return res.resp({ username }, '用户已登陆')
+    // }
+    // console.log('--req.headers.cookie--',req.headers.cookie,req.session.user)
+    
     if (!username || !password) {
         return res.resp_err(200, '账号或或密码不能为空！')
     }
